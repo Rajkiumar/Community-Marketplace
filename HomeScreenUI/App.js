@@ -1,24 +1,12 @@
-import 'react-native-gesture-handler'; // Must be at top
+// App.js
+import 'react-native-gesture-handler';
 import React from 'react';
-import { Button, View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
 import AddProductScreen from './screens/AddProductScreen';
 
 const Stack = createNativeStackNavigator();
-
-// Temporary Home Screen
-function HomeScreen({ navigation }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Community Marketplace</Text>
-      <Button
-        title="Add New Product"
-        onPress={() => navigation.navigate('Add Product')}
-      />
-    </View>
-  );
-}
 
 export default function App() {
   return (
@@ -30,17 +18,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-});
