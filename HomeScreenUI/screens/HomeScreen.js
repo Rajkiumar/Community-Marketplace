@@ -1,36 +1,58 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+// screens/HomeScreen.js
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 export default function HomeScreen() {
-  const products = [
-    {
-      id: 1,
-      title: 'Handmade Basket',
-      price: 499,
-      image: 'https://m.media-amazon.com/images/I/61fUwilhjJL._AC_UF350,350_QL80_.jpg',
-    },
-    {
-      id: 2,
-      title: 'Clay Pot',
-      price: 299,
-      image: 'https://img.indiahandmade.com/catalog/product/cache/dee0bc41489afb86ae85561eae1bc64e/s/m/smallc_2.png',
-    },
-    {
-      id: 3,
-      title: 'Jute Bag',
-      price: 799,
-      image: 'https://uneako.com/wp-content/uploads/2020/03/17.webp',
-    },
-    {
-      id: 4,
-      title: 'Wooden Toy',
-      price: 699,
-      image: 'https://cdn.shopify.com/s/files/1/0067/8179/6450/files/educational_toys_large.png?v=1556594037',
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch Firestore products
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, 'products'),
+      (snapshot) => {
+        const productList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProducts(productList);
+        setLoading(false);
+      },
+      (err) => {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products');
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Loading state
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#4B7BEC" />
+        <Text>Loading products...</Text>
+      </View>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={{ color: 'red' }}>{error}</Text>
+      </View>
+    );
+  }
+
+  // Main UI
   return (
     <View style={styles.container}>
       <Header />
@@ -58,5 +80,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     paddingVertical: 20,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
