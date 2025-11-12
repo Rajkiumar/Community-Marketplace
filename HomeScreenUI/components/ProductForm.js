@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase";
+import { storage } from "../firebase"; 
 
 const ProductForm = () => {
   const [image, setImage] = useState(null);
